@@ -1,8 +1,3 @@
-/**********************************
- * IFPB - Curso Superior de Tec. em Sist. para Internet
- * POO
- * Prof. Fausto Maranhão Ayres
- **********************************/
 package repositorio;
 
 import java.io.File;
@@ -168,7 +163,7 @@ public class Repositorio {
 
 	//--------------------------------------------------------------------
 	public void	salvarObjetos()  {
-		//gravar nos arquivos csv os objetos que estão no repositório
+		//gravar nos arquivos csv os objetos que estï¿½o no repositï¿½rio
 		try	{
 			File f = new File( new File(".\\eventos.csv").getCanonicalPath())  ;
 			FileWriter arquivo1 = new FileWriter(f); 
@@ -178,7 +173,7 @@ public class Repositorio {
 			arquivo1.close();
 		}
 		catch(Exception e){
-			throw new RuntimeException("problema na criação do arquivo  eventos "+e.getMessage());
+			throw new RuntimeException("problema na criaï¿½ï¿½o do arquivo  eventos "+e.getMessage());
 		}
 
 		try	{
@@ -205,7 +200,7 @@ public class Repositorio {
 			arquivo2.close();
 		}
 		catch (Exception e) {
-			throw new RuntimeException("problema na criação do arquivo  participantes "+e.getMessage());
+			throw new RuntimeException("problema na criaï¿½ï¿½o do arquivo  participantes "+e.getMessage());
 		}
 
 	}

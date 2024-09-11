@@ -1,7 +1,4 @@
 package regras_negocio;
-/**********************************
- * POO - Fausto Ayres
- **********************************/
 
 import java.util.ArrayList;
 
@@ -43,14 +40,14 @@ public class Fachada {
 		//localizar participante no repositorio, usando o nome 
 		Participante p = repositorio.localizarParticipante(nome);
 		if (p!=null)
-			throw new Exception("Não criou participante: " + nome + " ja cadastrado(a)");
+			throw new Exception("Nï¿½o criou participante: " + nome + " ja cadastrado(a)");
 
 		//criar objeto Participante 
 		p = new Participante (email, nome, idade);
 
-		//adicionar participante no repositório
+		//adicionar participante no repositï¿½rio
 		repositorio.adicionar(p);
-		//gravar repositório
+		//gravar repositï¿½rio
 		repositorio.salvarObjetos();
 	}	
 
@@ -64,16 +61,16 @@ public class Fachada {
 		if (p!=null)
 			throw new Exception("criar convidado: " + nome + " ja cadastrado(a)");
 
-		//a empresa é obrigatoria 
+		//a empresa ï¿½ obrigatoria 
 		if (empresa.isEmpty())
-			throw new Exception("criar convidado: " + nome + " empresa é obrigatoria");
+			throw new Exception("criar convidado: " + nome + " empresa ï¿½ obrigatoria");
 
 		//criar objeto Convidado 
 		Convidado c = new Convidado (email, nome, idade, empresa);
 
-		//adicionar convidado no repositório
+		//adicionar convidado no repositï¿½rio
 		repositorio.adicionar(c);
-		//gravar repositório
+		//gravar repositï¿½rio
 		repositorio.salvarObjetos();
 	}
 	
@@ -93,9 +90,9 @@ public class Fachada {
 		int id = repositorio.gerarIdEvento();
 		ev = new Evento(id, descricao, data, preco);	
 		
-		//adicionar evento no repositório
+		//adicionar evento no repositï¿½rio
 		repositorio.adicionar(ev);
-		//gravar repositório
+		//gravar repositï¿½rio
 		repositorio.salvarObjetos();
 	}
 
@@ -115,13 +112,13 @@ public class Fachada {
 		//localizar o participante no evento, usando o nome
 		Participante paux = ev.localizar(nome);
 		if(paux != null) 
-			throw new Exception("Não adicionou participante: " + nome + " já participa do evento " + id);
+			throw new Exception("Nï¿½o adicionou participante: " + nome + " jï¿½ participa do evento " + id);
 
 		//adicionar o participante ao evento
 		ev.adicionar(p);
 		//adicionar o evento ao participante
 		p.adicionar(ev);
-		//gravar repositório
+		//gravar repositï¿½rio
 		repositorio.salvarObjetos();
 	}
 
@@ -149,7 +146,7 @@ public class Fachada {
 		ev.remover(p);
 		//remover o evento do participante
 		p.remover(ev);
-		//gravar repositório
+		//gravar repositï¿½rio
 		repositorio.salvarObjetos();
 	}
 
@@ -165,9 +162,9 @@ public class Fachada {
 		}
 		ev.getParticipantes().clear();
 		
-		//remover evento do repositório
+		//remover evento do repositï¿½rio
 		repositorio.remover(ev);
-		//gravar repositório
+		//gravar repositï¿½rio
 		repositorio.salvarObjetos();
 	}
 
@@ -184,7 +181,7 @@ public class Fachada {
 
 		//alterar a data do evento
 		ev.setData(novadata);
-		//gravar repositório
+		//gravar repositï¿½rio
 		repositorio.salvarObjetos();
 	}
 	
@@ -202,7 +199,7 @@ public class Fachada {
 
 		//remover o participante do repositorio
 		repositorio.remover(p);
-		//gravar repositório
+		//gravar repositï¿½rio
 		repositorio.salvarObjetos();
 	}
 
