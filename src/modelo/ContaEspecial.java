@@ -7,15 +7,21 @@ public class ContaEspecial extends Conta {
 		super(id, data, saldo);
 		this.limite = limite;
 	}
+	
+	public ContaEspecial (int id, String data, double limite) {
+		super(id, data);
+		this.limite = limite;
+	}
 
 	@Override
-	public void debitar(double valor) throws Exception{
-        if(valor<0) throw new Exception("Quantia invalida!");
-        if(valor>saldo) throw new Exception("Quantia incorreta, voce nao possui saldo suficiente!");
-        saldo = saldo - valor;//apenas executa uma tarefa
-    }
+	public void debitar(double valor) throws Exception {
+	    if (valor < 0) throw new Exception("Quantia inválida!");
+	    double saldoDisponivel = saldo + limite; // Conta o limite disponível
+	    if (valor > saldoDisponivel) throw new Exception("Quantia incorreta, você não possui saldo suficiente!");
+	    saldo -= valor; // Ajusta o saldo
+	}
 
-	public String getLimite() {
+	public double getLimite() {
 		return limite;
 	}
 

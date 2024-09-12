@@ -14,13 +14,13 @@ public class Correntista {
 		this.nome = nome;
 		this.senha = senha;
 	}
-	public void adicionar(Conta co){
+	public void adicionarConta(Conta co){
 		contas.add(co);
 	}
 	public void remover(Conta co){
 		contas.remove(co);
 	}
-	public Conta localizar(int id){
+	public Conta localizarConta(int id){
 		for(Conta co : contas){
 			if(co.getId() == (id))
 				return co;
@@ -36,74 +36,7 @@ public class Correntista {
 			texto += co.getId() + ",";
 			return texto;
 	}
-	/*
-	public double getTotalPago() {
-	double total = 0;
-	for(Conta co : contas) {
-	total += co.getPago(this.preco);
-	}
-	return total;
-	}
 
-	public int getIdadeMedia() {
-	if (participantes.size()==0)
-	return 0;
-
-	double soma=0;
-	for(Participante p : participantes) {
-	soma += p.getIdade();
-	}
-	return (int) Math.round(soma/participantes.size());
-	}
-
-	public ArrayList<Participante> getParticipantesPorIdade(int idade) {
-	ArrayList<Participante> lista = new ArrayList<>();
-
-	for(Participante p : participantes) {
-	if (p.getIdade()==idade)
-	lista.add(p);
-	}
-	return lista;
-	}
-	public int contarConvidados() {
-	int cont=0;
-	for(Participante p : participantes) {
-	if (p instanceof Convidado)
-	cont++;
-	}
-	return cont;
-	}
-	*/
-	/*
-	public ArrayList<Convidado> getConvidados() {
-	ArrayList<Convidado> convidados = new ArrayList<>();
-	for(Participante p : participantes) {
-	if (p instanceof Convidado c)
-	convidados.add(c);
-	}
-	return convidados;
-	}
-
-	public ArrayList<Convidado> getConvidados(String empresa) {
-	ArrayList<Convidado> convidados = new ArrayList<>();
-
-	for(Participante p : participantes) {
-	if (p instanceof Convidado c && c.getEmpresa().equals(empresa))
-	convidados.add(c);
-	}
-	return convidados;
-	}
-	*/
-	/*
-	public int contarGratuidades() {
-	int cont=0;
-	for(Participante p : participantes) {
-	if (p.getPago(this.preco) == 0)
-	cont++;
-	}
-	return cont;
-	}
-	*/
 
 	public String getCpf() {
 		return cpf;
@@ -123,17 +56,9 @@ public class Correntista {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-	/*
-	public double getPreco() {
-	return preco;
-	}
-	public void setPreco(double preco) {
-	this.preco = preco;
-	}*/
+
 	public ArrayList<Conta> getContas() {
 		return contas;
 	}
-
-
 
 }
