@@ -1,11 +1,7 @@
 package appconsole;
-/**
- * SI - POO - Prof. Fausto Ayres
- * Teste da Fachada
- * 
- */
 
 import modelo.Correntista;
+
 import modelo.Conta;
 import regras_negocio.Fachada;
 

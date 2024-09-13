@@ -1,34 +1,21 @@
 package appconsole;
 
-/**
- * SI - POO - Prof. Fausto Ayres
- * Teste da Fachada
- * 
- */
-
 import regras_negocio.Fachada;
 
 public class Alterar {
 
 	public Alterar() {
 		try {
-			Fachada.adicionarParticipanteEvento("joao", 1);
-			Fachada.adicionarParticipanteEvento("maria", 1);
-			Fachada.adicionarParticipanteEvento("jose", 1);
-			Fachada.adicionarParticipanteEvento("ana", 1);
-			Fachada.removerParticipanteEvento("ana", 1);
+			Fachada.inserirCorrentistaConta(1, "0001");
+			Fachada.inserirCorrentistaConta(3, "1111");
+			Fachada.inserirCorrentistaConta(4, "2222");
+			Fachada.removerCorrentistaConta(2, "1111");
 			
-			Fachada.adicionarParticipanteEvento("joao", 2);
-			Fachada.adicionarParticipanteEvento("maria", 2);
-			System.out.println("adicionou participantes aos eventos");
-		} catch (Exception e) {
-			System.out.println("--->" + e.getMessage());
-		}
 
-		try {
-			Fachada.adiarEvento("24/10/2024", "30/10/2024");
-			System.out.println("adiou evento");
+			Fachada.apagarConta(4);
+			
 
+			System.out.println("adicionou correntistas a contas");
 		} catch (Exception e) {
 			System.out.println("--->" + e.getMessage());
 		}

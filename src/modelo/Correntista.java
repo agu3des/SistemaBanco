@@ -38,27 +38,32 @@ public class Correntista {
 	}
 
 
+	//gets
 	public String getCpf() {
 		return cpf;
-	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
 	}
 	public String getNome() {
 		return nome;
 	}
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
 	public String getSenha() {
 		return senha;
+	}
+	
+	public ArrayList<Conta> getContas() {
+		return contas;
+	}
+
+	
+	//sets
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
 
-	public ArrayList<Conta> getContas() {
-		return contas;
-	}
 
 }

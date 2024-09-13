@@ -1,8 +1,4 @@
-/**********************************
- * IFPB - Curso Superior de Tec. em Sist. para Internet
- * POO
- * Prof. Fausto Maranh�o Ayres
- **********************************/
+
 package repositorio;
 
 import java.io.File;
@@ -21,6 +17,9 @@ public class Repositorio {
 	public Repositorio() {
 		carregarObjetos();
 	}
+	
+	
+	
 	public void adicionarConta(Conta c)	{
 		contas.add(c);
 	}
@@ -36,26 +35,16 @@ public class Repositorio {
 		return null;
 	}
 
-	/*public Participante localizarParticipante(String nome)	{
-		for(Participante p : participantes)
-			if(p.getNome().equals(nome))
-				return p;
-		return null;
-	}*/
+	
 
 	public void adicionarCorrentista(Correntista cr)	{
 		correntistas.add(cr);
 	}
+	
 	public void removerCorrentista(Correntista cr)	{
 		correntistas.remove(cr);
 	}
 
-	/*public Evento localizarEvento(int id)	{
-		for(Evento e : eventos)
-			if(e.getId() == id)
-				return e;
-		return null;
-	}*/
 	public Correntista localizarCorrentista(String cpf)	{
 		for(Correntista cr : correntistas)
 			if(cr.getCpf().equals(cpf))
@@ -70,14 +59,19 @@ public class Repositorio {
 		return null;
 	}
 
+	
+	
 	public ArrayList<Conta> getContas() 	{
 		return contas;
 	}
 	
+
 	public ArrayList<Correntista> getCorrentistas() 	{
 		return correntistas;
 	}
 
+	
+	
 	public int getTotalContas()	{
 		return contas.size();
 	}
@@ -86,6 +80,7 @@ public class Repositorio {
 		return correntistas.size();
 	}
 
+	
 	public int gerarIdConta() {
 		if (contas.isEmpty())
 			return 1;
@@ -94,6 +89,8 @@ public class Repositorio {
 			return ultimo.getId() + 1;
 		}
 	}
+	
+	
 	public void carregarObjetos()  	{
 		// carregar para o repositorio os objetos dos arquivos csv
 		try {

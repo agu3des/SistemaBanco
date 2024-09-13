@@ -1,15 +1,14 @@
 package regras_negocio;
-/**********************************
- * POO - Fausto Ayres
- **********************************/
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import modelo.Conta;
 import modelo.ContaEspecial;
 import modelo.Correntista;
-import modelo.Conta;
 import repositorio.Repositorio;
 
 public class Fachada {
@@ -35,28 +34,25 @@ public class Fachada {
 		//lista todos participantes, caso nome for vazio, 
 		return repositorio.getContas();
 	}
+	
 	public static Conta localizarConta(int id) {
 		return repositorio.localizarConta(id);
 	}
+	
 	public static Correntista localizarCorrentista(String cpf) 	{
 		return repositorio.localizarCorrentista(cpf);
 	}
-	/*public static Evento localizarEvento(String data) 	{
-		return repositorio.localizarEvento(data);
-	}*/
-	
-	public static void criarConta (String cpf) throws Exception {
-		/*data = data.trim();
-		descricao = descricao.trim();*/
 
+	public static void criarConta (String cpf) throws Exception {
+		cpf = cpf.trim();
+		
 		//localizar Correntista no repositorio, usando o cpf 
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if (cr==null)
-			throw new Exception("criar Conta: " + cpf + " -> Nao ha correntista titular com esse cpf");
+			throw new Exception("Criar Conta: " + cpf + " -> Nao ha correntista titular com esse cpf");
 		
-		/*if (preco <0)
-			throw new Exception("criar evento: " + descricao + " preco nao pode ser negativo " + preco);*/
-
+		//for titular unico
+		
 		//gerar id no repositorio
 		int id = repositorio.gerarIdConta();
 		
@@ -65,9 +61,13 @@ public class Fachada {
 		
 		Conta co = new Conta(id, data);	
 		
-		//adicionar conta no reposit�rio
+		//adicionar conta no repositorio
 		repositorio.adicionarConta(co);
-		//gravar reposit�rio
+		
+		//associar a conta ao correntista
+		co.adicionarCorrentista(cr);
+		
+		//gravar repositorio
 		repositorio.salvarObjetos();
 	}
 	
@@ -81,8 +81,8 @@ public class Fachada {
 		if (cr!=null)
 			throw new Exception("Nao criou correntista: " + cpf + " ja cadastrado(a)");
 		
-		if (senha.length() > 4 || senha.length() < 4)
-			throw new Exception("A senha deve ser de 4 dígitos");
+		if (senha.length() != 4 || !senha.matches("\\d+"))
+			throw new Exception("A senha deve ser de 4 dígitos e ser numérica!");
 
 		//criar objeto Correntista 
 		cr = new Correntista (cpf, nome, senha);
@@ -90,7 +90,9 @@ public class Fachada {
 
 		//adicionar correntista no repositorio
 		repositorio.adicionarCorrentista(cr);
-		//gravar reposit�rio
+
+		
+		//gravar repositorio
 		repositorio.salvarObjetos();
 	}	
 
@@ -100,11 +102,11 @@ public class Fachada {
 		//localizar Correntista no repositorio, usando o cpf 
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if (cr==null)
-			throw new Exception("criar Conta: " + cpf + " -> Nao ha correntista titular com esse cpf");
+			throw new Exception("Criar Conta: " + cpf + " -> Nao ha correntista titular com esse cpf!");
 		
-		//o limite minimo eh de 50 reais
+		//o limite minimo é de 50 reais
 		if (limite < 50)
-			throw new Exception("O limite minimo é de 50 reais");
+			throw new Exception("O limite minimo é de 50 reais!");
 
 		int id = repositorio.gerarIdConta();
 		
@@ -114,33 +116,39 @@ public class Fachada {
 		//criar objeto ContaEspecial
 		ContaEspecial ce = new ContaEspecial (id, data, limite);
 		
-		//adicionar Conta Especial no reposit�rio
+		//adicionar Conta Especial no repositorio
 		repositorio.adicionarConta(ce);
-		//gravar reposit�rio
+		
+		//associar a conta ao correntista
+		ce.adicionarCorrentista(cr);
+		
+		//gravar repositorio
 		repositorio.salvarObjetos();
 	}
 	
 	public static void inserirCorrentistaConta (int id, String cpf) throws Exception {
 		//localizar conta no repositorio, usando id
-		Conta c = repositorio.localizarConta(id);
-		if(c == null) 
-			throw new Exception("inserir CorrentistaConta: Conta " + id + " inexistente");
+		Conta co = repositorio.localizarConta(id);
+		if(co == null) 
+			throw new Exception("Inserir CorrentistaConta: Conta " + id + " inexistente");
 		
 		//localizar correntista no repositorio, usando cpf
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if(cr == null) 
-			throw new Exception("inserir CorrentistaConta:  " + cpf + " inexistente");
+			throw new Exception("Inserir CorrentistaConta:  " + cpf + " inexistente");
 		
-		//localizar o correntista na conta, usando o id
+		//localizar o correntista na conta, usando o id para verificar se já existe o relacionamento
 		Conta caux = cr.localizarConta(id);
 		if(caux != null) 
 			throw new Exception("Nao inseriu correntista: " + cpf + " ja participa da conta " + id);
 
 		//adicionar a conta ao correntista
-		cr.adicionarConta(c);
+		cr.adicionarConta(co);
+		
 		//adicionar o correntista à conta
-		c.adicionarCorrentista(cr);
-		//gravar reposit�rio
+		co.adicionarCorrentista(cr);
+		
+		//gravar repositorio
 		repositorio.salvarObjetos();
 
 	}
@@ -149,8 +157,8 @@ public class Fachada {
 		cpf = cpf.trim();
 		
 		//localizar conta no repositorio usando id
-		Conta c = repositorio.localizarConta(id);
-		if(c == null) 
+		Conta co = repositorio.localizarConta(id);
+		if(co == null) 
 			throw new Exception("remover CorrentistaConta: conta " + id + " inexistente");
 		
 		//localizar correntista no repositorio, usando cpf
@@ -164,53 +172,92 @@ public class Fachada {
 			throw new Exception("Nao removeu correntista" + cpf + " nao participa da conta " + id);
 
 		//remover a conta do correntista
-		cr.remover(c);
+		cr.remover(co);
+		
 		//remover o correntista da conta
-		c.removerCorrentista(cr);
-		//gravar reposit�rio
+		co.removerCorrentista(cr);
+		
+		//gravar repositorio
 		repositorio.salvarObjetos();
 
 	}
 
 	public static void apagarConta(int id) throws Exception	{
 		//localizar conta no repositorio, usando id 
-		Conta c = repositorio.localizarConta(id);
-		if (c == null)
-			throw new Exception("apagar conta: id " + id + " inexistente");
+		Conta co = repositorio.localizarConta(id);
+		if (co == null)
+			throw new Exception("Erro ao apagar conta: " + id + " id inexistente!");
 
-		//Remover todos os correntista desta conta
-		for(Correntista cr : c.getCorrentistas()) {
-			cr.remover(c);
+		if (co.getSaldo() != 0) {
+			throw new Exception("Erro ao apagar conta com id " + id + ", pois saldo diferente de zero.");
 		}
-		c.getCorrentistas().clear();
 		
-		//remover conta do reposit�rio
-		repositorio.removerConta(c);
-		//gravar reposit�rio
+		//Remover todos os correntista desta conta
+		for(Correntista cr : co.getCorrentistas()) {
+			cr.remover(co);
+		}
+		co.getCorrentistas().clear();
+		
+		//remover conta do repositorio
+		repositorio.removerConta(co);
+		
+		//gravar repositorio
 		repositorio.salvarObjetos();
 	}
 	
-	/*public static void 	apagarParticipante(String nome) throws Exception {
-		nome = nome.trim();
+	
+	public static void creditarValor(int id, String cpf, String senha, double valor)  throws Exception {
+		Conta co = repositorio.localizarConta(id);
+		if (co == null) {
+			throw new Exception("Erro ao localizar conta com id: " + id);
+		}
+		
+		Correntista cr = repositorio.localizarCorrentista(cpf);
+		if (cr == null) {
+			throw new Exception("Erro ao localizar correntista com cpf: " + cpf);
+		}
+		
+		if (!cr.getSenha().equals(senha)) {
+			throw new Exception("Senha Incorreta!");
+		}
+		
+		if (valor <= 0) {
+			throw new Exception("Valor inválido, digite um valor acima de zero.");
+		}
 
-		//localizar participante no repositorio, usando o nome 
-		Participante p = repositorio.localizarParticipante(nome);
-		if(p == null) 
-			throw new Exception("apagar participante: participante " + nome + " inexistente");
+		co.creditar(valor);
+	}
 
-		//participante nao pode ser deletado caso participe de algum evento
-		if(!p.getEventos().isEmpty()) 
-			throw new Exception("apagar participante: participante " + nome + " ainda tem evento");
-
-		//remover o participante do repositorio
-		repositorio.remover(p);
-		//gravar reposit�rio
-		repositorio.salvarObjetos();
-	}*/
+	public static void debitarValor(int id, String cpf, String senha, double valor)  throws Exception {
+		Conta co = repositorio.localizarConta(id);
+		
+		if (co == null) {
+			throw new Exception("Erro ao localizar conta com id: " + id);
+		}
+		
+		Correntista cr = repositorio.localizarCorrentista(cpf);
+		if (cr == null) {
+			throw new Exception("Erro ao localizar correntista com cpf: " + cpf);
+		}
+		
+		if (!cr.getSenha().equals(senha)) {
+			throw new Exception("Senha Incorreta!");
+		}
+		
+		if (valor > co.getSaldo()) {
+			throw new Exception("Valor inválido, digite um valor abaixo ou igual ao saldo disponível.");
+		}
+		
+		co.debitar(valor);
+	}
+	
 	
     // Método auxiliar para obter a data atual
-    private static String getDataAtual() {
-        return java.time.LocalDate.now().toString();
-    }
+	private static String getDataAtual() {
+	    DateTimeFormatter f1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	    LocalDate d1 = LocalDate.now(); // Obter a data atual
+	    return d1.format(f1); // Formatar a data
+	}
+
 
 }
