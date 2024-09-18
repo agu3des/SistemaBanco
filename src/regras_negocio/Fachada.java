@@ -221,7 +221,7 @@ public class Fachada {
 			throw new Exception("Senha Incorreta!");
 		}
 		
-		if (valor <= 0) {
+		if (valor <= 0){
 			throw new Exception("Valor inválido, digite um valor acima de zero.");
 		}
 
@@ -249,6 +249,30 @@ public class Fachada {
 		}
 		
 		co.debitar(valor);
+	}
+	
+	public static void transferirValor(int id1, int id2, String cpf, String senha, double valor) throws Exception {
+		Conta co1 = repositorio.localizarConta(id1);
+		Conta co2 = repositorio.localizarConta(id2);
+		
+		if (co1 == null || co2 == null) {
+			throw new Exception("Erro ao localizar conta com id: " + id1 + " ou " + id2);
+		}
+		
+		Correntista cr = repositorio.localizarCorrentista(cpf);
+		if (cr == null) {
+			throw new Exception("Erro ao localizar correntista com cpf: " + cpf);
+		}
+		
+		if (!cr.getSenha().equals(senha)) {
+			throw new Exception("Senha Incorreta!");
+		}
+		
+		if (valor > co1.getSaldo()) {
+			throw new Exception("Valor inválido, digite um valor abaixo ou igual ao saldo disponível.");
+		}
+		
+		co1.transferir(valor, co2);
 	}
 	
 	
