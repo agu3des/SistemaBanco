@@ -28,6 +28,16 @@ public class ContaEspecial extends Conta {
 	public void setLimite(double limite) {
 		this.limite = limite;
 	}
+	
+	@Override
+	public String toString() {
+	String texto =  "id=" + id + ", data=" + data + ", saldo=" + saldo + ", limite=" + limite;
+
+	texto += ", correntistas:";
+	for(Correntista c : correntistas)
+		texto += c.getCpf() + ",";
+		return texto;
+}
 		
 
 }

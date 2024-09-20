@@ -151,7 +151,7 @@ public class TelaCorrentista {
 								JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if(escolha == 0) {
 							Fachada.apagarConta(Integer.parseInt(data));
-							label.setText("Contaapagada e correntistas associados removidos: "+ data);
+							label.setText("Conta apagada e correntistas associados removidos: "+ data);
 							listagem();
 						}
 						else
@@ -261,7 +261,7 @@ public class TelaCorrentista {
 						String id = (String) table.getValueAt( table.getSelectedRow(), 0);
 						Correntista ev = Fachada.localizarCorrentista(Integer.parseInt(id));
 						String nomes= "Nomes dos convidados:";
-						for(ContaEspecial c : ev.getContaEspecials())
+						for(ContaEspecial c : ev.getContaEspecial())
 							nomes+="\n"+c.getNome();
 
 						JOptionPane.showMessageDialog(frame, nomes);

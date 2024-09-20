@@ -42,33 +42,42 @@ public class Fachada {
 	public static Correntista localizarCorrentista(String cpf) 	{
 		return repositorio.localizarCorrentista(cpf);
 	}
-
-	public static void criarConta (String cpf) throws Exception {
+	
+	public static void criarConta(String cpf) throws Exception {
 		cpf = cpf.trim();
-		
-		//localizar Correntista no repositorio, usando o cpf 
-		Correntista cr = repositorio.localizarCorrentista(cpf);
-		if (cr==null)
-			throw new Exception("Criar Conta: " + cpf + " -> Nao ha correntista titular com esse cpf");
-		
-		//for titular unico
-		
-		//gerar id no repositorio
-		int id = repositorio.gerarIdConta();
-		
-		//gerar data no repositorio
-		String data = getDataAtual();
-		
-		Conta co = new Conta(id, data);	
-		
-		//adicionar conta no repositorio
-		repositorio.adicionarConta(co);
-		
-		//associar a conta ao correntista
+
+	    // Localizar Correntista no repositorio, usando o CPF
+	    Correntista cr = repositorio.localizarCorrentista(cpf);
+	    if (cr == null) {
+	        throw new Exception("Criar Conta: " + cpf + " -> Não há correntista titular com esse CPF");
+	    }
+
+	    // Verificar se o CPF já é titular de outra conta no repositorio
+	    for (Conta contaExistente : repositorio.getContas()) {
+	        // Verifica se o primeiro correntista é o titular com o mesmo CPF
+	        if (contaExistente.getCorrentistas().size() > 0 && 
+	            contaExistente.getCorrentistas().get(0).getCpf().equals(cpf)) {
+	            throw new Exception("Criar Conta: " + cpf + " -> Esse CPF já é titular de outra conta");
+	        }
+	    }
+
+	    // Gerar ID no repositorio
+	    int id = repositorio.gerarIdConta();
+	    
+	    // Gerar data no repositorio
+	    String data = getDataAtual();
+	    
+	    // Criar nova conta
+	    Conta co = new Conta(id, data);
+
+	    // Adicionar a nova conta ao repositório
+	    repositorio.adicionarConta(co);
+
+		//Associar a conta ao correntista
 		co.adicionarCorrentista(cr);
 		
-		//gravar repositorio
-		repositorio.salvarObjetos();
+	    // Gravar repositório
+	    repositorio.salvarObjetos();
 	}
 	
 	public static void criarCorrentista(String cpf, String nome, String senha) throws Exception {
@@ -124,6 +133,7 @@ public class Fachada {
 		
 		//gravar repositorio
 		repositorio.salvarObjetos();
+		
 	}
 	
 	public static void inserirCorrentistaConta (int id, String cpf) throws Exception {
@@ -159,17 +169,17 @@ public class Fachada {
 		//localizar conta no repositorio usando id
 		Conta co = repositorio.localizarConta(id);
 		if(co == null) 
-			throw new Exception("remover CorrentistaConta: conta " + id + " inexistente");
+			throw new Exception("Remover CorrentistaConta: conta " + id + " inexistente");
 		
 		//localizar correntista no repositorio, usando cpf
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if (cr == null)
-			throw new Exception("remover CorrentistaConta: correntista" + cpf + " inexistente");
+			throw new Exception("Remover CorrentistaConta: correntista" + cpf + " inexistente");
 		
 		//localizar correntista na conta, usando o id
 		Conta caux = cr.localizarConta(id);
 		if(caux == null) 
-			throw new Exception("Nao removeu correntista" + cpf + " nao participa da conta " + id);
+			throw new Exception("Não removeu correntista" + cpf + " nao participa da conta " + id);
 
 		//remover a conta do correntista
 		cr.remover(co);
@@ -220,12 +230,11 @@ public class Fachada {
 		if (!cr.getSenha().equals(senha)) {
 			throw new Exception("Senha Incorreta!");
 		}
-		
-		if (valor <= 0){
-			throw new Exception("Valor inválido, digite um valor acima de zero.");
-		}
 
 		co.creditar(valor);
+		
+		//gravar repositorio
+		repositorio.salvarObjetos();
 	}
 
 	public static void debitarValor(int id, String cpf, String senha, double valor)  throws Exception {
@@ -244,11 +253,10 @@ public class Fachada {
 			throw new Exception("Senha Incorreta!");
 		}
 		
-		if (valor > co.getSaldo()) {
-			throw new Exception("Valor inválido, digite um valor abaixo ou igual ao saldo disponível.");
-		}
-		
 		co.debitar(valor);
+		
+		//gravar repositorio
+		repositorio.salvarObjetos();
 	}
 	
 	public static void transferirValor(int id1, int id2, String cpf, String senha, double valor) throws Exception {
@@ -268,11 +276,10 @@ public class Fachada {
 			throw new Exception("Senha Incorreta!");
 		}
 		
-		if (valor > co1.getSaldo()) {
-			throw new Exception("Valor inválido, digite um valor abaixo ou igual ao saldo disponível.");
-		}
-		
 		co1.transferir(valor, co2);
+		
+		//gravar repositorio
+		repositorio.salvarObjetos();
 	}
 	
 	

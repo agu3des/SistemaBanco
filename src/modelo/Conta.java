@@ -7,7 +7,7 @@ public class Conta {
 	protected String data;
 	protected double saldo;
 
-	private ArrayList<Correntista> correntistas = new ArrayList<>();
+	protected ArrayList<Correntista> correntistas = new ArrayList<>();
 	
 	public Conta(int id, String data) {
 		super();
@@ -23,13 +23,14 @@ public class Conta {
 		this.saldo = saldo;
 	}
 
-    public void creditar(double valor) {
-        saldo = saldo + valor; //altera o objeto, pois é void
+    public void creditar(double valor) throws Exception {
+		if (valor <= 0) throw new Exception("Valor inválido, digite um valor acima de zero.");
+		saldo = saldo + valor; //altera o objeto, pois é void
     }
 
     public void debitar(double valor) throws Exception{
-        if(valor<0) throw new Exception("Quantia invalida!");
-        if(valor>saldo) throw new Exception("Quantia incorreta, voce nao possui saldo suficiente!");
+        if(valor<=0) throw new Exception("Valor inválido, digite um valor acima de zero.");
+        if(valor>saldo) throw new Exception("Quantia incorreta, você não possui saldo suficiente!");
         saldo = saldo - valor;
     }
 

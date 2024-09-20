@@ -156,6 +156,15 @@ public class Repositorio {
 					this.adicionarConta(co);
 					if(partes.length>4)
 						correntistas = partes[4];		//cpfs dos correntistas separados por ","
+					//relacionar correntista com as suas contas
+					if(!correntistas.isEmpty() && co != null) {	
+						for(String cpfCorrentista : correntistas.split(",")){	//converter string em array
+							corr = this.localizarCorrentista(cpfCorrentista);
+
+							corr.adicionarConta(co);
+							co.adicionarCorrentista(corr);
+						}
+					}
 				}
 				else if (tipo.equals("CONTA ESPECIAL")) {
 					String limite = partes[4];
@@ -163,17 +172,18 @@ public class Repositorio {
 					this.adicionarConta(ce);
 					if(partes.length>5)
 						correntistas = partes[5];		//cpfs dos correntistas separados por ","
-				}
+					//relacionar correntista com as suas contas
+					if(!correntistas.isEmpty() && ce != null) {	
+						for(String cpfCorrentista : correntistas.split(",")){	//converter string em array
+							corr = this.localizarCorrentista(cpfCorrentista);
 
-				//relacionar correntista com as suas contas
-				if(!correntistas.isEmpty() && co != null) {	
-					for(String cpfCorrentista : correntistas.split(",")){	//converter string em array
-						corr = this.localizarCorrentista(cpfCorrentista);
-
-						corr.adicionarConta(co);
-						co.adicionarCorrentista(corr);
+							corr.adicionarConta(ce);
+							ce.adicionarCorrentista(corr);
+						}
 					}
 				}
+
+
 			}
 			arquivo2.close();
 		}

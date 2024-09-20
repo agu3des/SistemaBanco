@@ -7,14 +7,17 @@ public class Apagar {
 
 	public Apagar() {
 		try {
-			Fachada.apagarConta("maria");
-			System.out.println("apagou maria");
+//			//teste para: saldo != 0 /  apagar conta e não apagar o correntista
+//			Fachada.apagarConta(4);
 			
-			Fachada.apagarCorrentista("30/10/2024");
-			System.out.println("apagou evento na data 30/10/2024");
+			//remover correntistas associados
+			Fachada.apagarConta(5);
+			
+			
+			System.out.println("Apagou");
 
 		} catch (Exception e) {
-			System.out.println("--->" + e.getMessage());
+			System.out.println("--->" +e.getMessage());
 		}
 	}
 

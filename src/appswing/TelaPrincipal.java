@@ -70,7 +70,11 @@ public class TelaPrincipal {
 		button_1.setBounds(139, 194, 137, 23);
 		frame.getContentPane().add(button_1);
 		
-		JButton button_2 = new JButton("Conta Especial");
+		JButton button_2 = new JButton("Caixa");
+		button_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		button_2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		button_2.setBounds(139, 159, 137, 23);
 		frame.getContentPane().add(button_2);
