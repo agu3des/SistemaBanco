@@ -1,6 +1,6 @@
 package appswing;
 
-import java.awt.EventQueue;
+//import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -9,10 +9,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
-
-
-//importar a classe Fachada
 import regras_negocio.Fachada;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+//import java.awt.event.WindowListener; 
 
 public class TelaCaixa {
 
@@ -20,7 +21,7 @@ public class TelaCaixa {
     private JTextField textField; // Correntista (CPF)
     private JTextField textField_1; // ID da conta
     private JTextField textField_2; // Valor
-
+    /*
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -32,17 +33,19 @@ public class TelaCaixa {
                 }
             }
         });
-    }
+    }*/
 
     public TelaCaixa() {
         initialize();
+        frame.setVisible(true);
     }
 
     private void initialize() {
         frame = new JFrame();
         frame.setBounds(100, 100, 450, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
+        
 
         JLabel label = new JLabel("Caixa");
         label.setFont(new Font("Times New Roman", Font.PLAIN, 25));
@@ -58,7 +61,6 @@ public class TelaCaixa {
                     double valor = Double.parseDouble(textField_2.getText().trim());
 
                     String senha = JOptionPane.showInputDialog(frame, "Digite sua senha:", "Autenticação", JOptionPane.PLAIN_MESSAGE);
-                    // Chame o método da fachada para creditar
                     Fachada.creditarValor(idConta, cpf, senha, valor);
 
                     JOptionPane.showMessageDialog(frame, "Valor creditado com sucesso.");
@@ -80,7 +82,6 @@ public class TelaCaixa {
                     double valor = Double.parseDouble(textField_2.getText().trim());
 
                     String senha = JOptionPane.showInputDialog(frame, "Digite sua senha:", "Autenticação", JOptionPane.PLAIN_MESSAGE);
-                    // Chame o método da fachada para debitar
                     Fachada.debitarValor(idConta, cpf, senha, valor);
 
                     JOptionPane.showMessageDialog(frame, "Valor debitado com sucesso.");
@@ -105,7 +106,6 @@ public class TelaCaixa {
                     String contaDestinoStr = JOptionPane.showInputDialog(frame, "Digite a conta de destino:", "Transferência", JOptionPane.PLAIN_MESSAGE);
                     int idContaDestino = Integer.parseInt(contaDestinoStr.trim());
 
-                    // Chame o método da fachada para transferir
                     Fachada.transferirValor(idContaOrigem, idContaDestino, cpf, senha, valor);
 
                     JOptionPane.showMessageDialog(frame, "Transferência realizada com sucesso.");
@@ -144,5 +144,18 @@ public class TelaCaixa {
         textField_2.setBounds(101, 133, 86, 20);
         frame.getContentPane().add(textField_2);
         textField_2.setColumns(10);
+        
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Quando a janela for fechada, mostre a tela principal novamente
+                frame.setVisible(false);
+                new TelaPrincipal(); // Ou se você tiver uma referência à TelaPrincipal, use ela
+            }
+        });
+    }
+    
+    public JFrame getFrame() {
+        return frame;
     }
 }
