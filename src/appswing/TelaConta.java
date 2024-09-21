@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -19,6 +20,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+
 import modelo.Conta;
 import modelo.ContaEspecial;
 import modelo.Correntista;
@@ -121,7 +123,7 @@ public class TelaConta {
                 try {
                     String cpf = textField_2.getText();
                     if (cpf.isEmpty()) {
-                        label.setText("CPF vazio");
+                        label.setText("CPF não pode ser vazio.");
                         return;
                     }
                     if (textField_1.getText().isEmpty()) {
@@ -169,7 +171,8 @@ public class TelaConta {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (table.getSelectedRow() >= 0) {
-                        String id = (String) table.getValueAt(table.getSelectedRow(), 0);
+                    	String id = table.getValueAt(table.getSelectedRow(), 0).toString();
+                        //String id = (String) table.getValueAt(table.getSelectedRow(), 0);
                         Fachada.apagarConta(Integer.parseInt(id));
                         label.setText("Conta apagada com sucesso!");
                         listagem();
@@ -190,8 +193,13 @@ public class TelaConta {
             public void actionPerformed(ActionEvent e) {
                 try {
                     if (table.getSelectedRow() >= 0) {
-                        String id = (String) table.getValueAt(table.getSelectedRow(), 0);
+                    	String id = table.getValueAt(table.getSelectedRow(), 0).toString();
+                        //String id = (String) table.getValueAt(table.getSelectedRow(), 0);
                         String cpf = textField_2.getText();
+                        if (cpf.isEmpty()) {
+                            label.setText("CPF não pode ser vazio.");
+                            return;
+                        }
                         Fachada.inserirCorrentistaConta(Integer.parseInt(id), cpf);
                         label.setText("Correntista adicionado à conta!");
                         listagem();
@@ -209,13 +217,18 @@ public class TelaConta {
 
         button_4 = new JButton("Remover Correntista");
         button_4.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        	public void actionPerformed(ActionEvent e) {
                 try {
                     if (table.getSelectedRow() >= 0) {
-                        String id = (String) table.getValueAt(table.getSelectedRow(), 0);
-                        String cpf = textField_2.getText();
-                        Fachada.removerCorrentistaConta(Integer.parseInt(id), cpf);
-                        label.setText("Correntista removido da conta!");
+                        String cpf = textField_2.getText();  // Usar o campo da tela para o CPF
+                        if (cpf.isEmpty()) {
+                            label.setText("CPF não pode ser vazio.");
+                            return;
+                        }
+
+                        String id = table.getValueAt(table.getSelectedRow(), 0).toString();
+                        Fachada.removerCorrentistaConta(Integer.parseInt(id), cpf.trim());
+                        label.setText("Correntista removido com sucesso!");
                         listagem();
                     } else {
                         label.setText("Selecione uma conta para remover o correntista.");
