@@ -44,6 +44,9 @@ public class TelaConta {
     private JButton button_3;
     private JButton button_4;
     private JButton button_5;
+    
+    private JLabel labelSaldoTotal;
+
 
     public TelaConta() {
         initialize();
@@ -252,6 +255,13 @@ public class TelaConta {
         button_5.setFont(new Font("Times New Roman", Font.PLAIN, 12));
         button_5.setBounds(402, 9, 86, 23);
         frame.getContentPane().add(button_5);
+        
+        labelSaldoTotal = new JLabel("Saldo Total: 0.0");
+        labelSaldoTotal.setHorizontalAlignment(SwingConstants.RIGHT);
+        labelSaldoTotal.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+        labelSaldoTotal.setBounds(400, 321, 295, 14);
+        frame.getContentPane().add(labelSaldoTotal);
+
     }
 
     public void listagem() {
@@ -265,6 +275,8 @@ public class TelaConta {
             model.addColumn("Saldo");
             model.addColumn("Correntistas");
             model.addColumn("Limite");
+            
+            double saldoTotal = 0.0;  // Para calcular o saldo total
 
             for (Conta conta : lista) {
                 String correntistasTexto = "";
@@ -275,6 +287,8 @@ public class TelaConta {
                         correntistasTexto += correntista.getCpf() + " ";
                     }
                 }
+                
+                saldoTotal += conta.getSaldo();
 
                 if (conta instanceof ContaEspecial ce) {
                     model.addRow(new Object[]{conta.getId(), conta.getData(), conta.getSaldo(), correntistasTexto, ce.getLimite()});
@@ -282,9 +296,12 @@ public class TelaConta {
                     model.addRow(new Object[]{conta.getId(), conta.getData(), conta.getSaldo(), correntistasTexto, "-"});
                 }
             }
+            
+
 
             table.setModel(model);
             label_6.setText("Resultados: " + lista.size() + " contas - Selecione uma linha.");
+            labelSaldoTotal.setText("Saldo Total: " + saldoTotal);  // Atualiza o label com o saldo total
         } catch (Exception erro) {
             label.setText("Erro: " + erro.getMessage());
         }
