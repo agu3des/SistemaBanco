@@ -1,19 +1,12 @@
-
 package appswing;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.text.ParseException;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -23,317 +16,157 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.MaskFormatter;
 
-import modelo.ContaEspecial;
-import modelo.Correntista;
 import modelo.Conta;
+import modelo.Correntista;
 import regras_negocio.Fachada;
 
 public class TelaCorrentista {
-	private JDialog frame;
-	private JTable table;
-	private JScrollPane scrollPane;
-	private JButton button;
-	private JButton button_1;
-	private JButton button_4;
-	private JButton button_2;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JLabel label;
-	private JLabel label_1;
-	private JLabel label_5;
-	private JLabel label_3;
-	private JLabel label_8;
-	private JLabel label_6;
-	private JButton button_3;
-	private JButton button_5;
-	private JFormattedTextField formattedTextField;
+    private JDialog frame;
+    private JTable table;
+    private JScrollPane scrollPane;
+    private JButton buttonCriar;
+    private JButton buttonVerContas;
+    private JTextField textFieldNome;
+    private JTextField textFieldCpf;
+    private JTextField textFieldSenha; // Campo de senha
+    private JLabel labelMensagem;
 
-	/**
-	 * Launch the application.
-	 */
-	//	public static void main(String[] args) {
-	//		EventQueue.invokeLater(new Runnable() {
-	//			public void run() {
-	//				try {
-	//					TelaCorrentistas window = new TelaCorrentistas();
-	//					window.frame.setVisible(true);
-	//				} catch (Exception e) {
-	//					e.printStackTrace();
-	//				}
-	//			}
-	//		});
-	//	}
+    public TelaCorrentista() {
+        initialize();
+        frame.setVisible(true);
+    }
 
-	/**
-	 * Create the application.
-	 */
-	public TelaCorrentista() {
-		initialize();
-		frame.setVisible(true);
-	}
+    private void initialize() {
+        frame = new JDialog();
+        frame.setModal(true);
+        frame.setTitle("Correntistas");
+        frame.setBounds(100, 100, 912, 400);
+        frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JDialog();
-		frame.setModal(true);
-		frame.getContentPane().setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowOpened(WindowEvent e) {
-				listagem();
-			}
-		});
-		frame.setTitle("Correntistas");
-		frame.setBounds(100, 100, 912, 351);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+        scrollPane = new JScrollPane();
+        scrollPane.setBounds(26, 42, 844, 120);
+        frame.getContentPane().add(scrollPane);
 
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(26, 42, 844, 120);
-		frame.getContentPane().add(scrollPane);
+        table = new JTable();
+        table.setGridColor(Color.BLACK);
+        table.setBackground(Color.WHITE);
+        table.setFillsViewportHeight(true);
+        table.setRowSelectionAllowed(true);
+        table.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+        scrollPane.setViewportView(table);
+        table.setBorder(new LineBorder(new Color(0, 0, 0)));
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-		table = new JTable();
-		table.setGridColor(Color.BLACK);
-		table.setRequestFocusEnabled(false);
-		table.setFocusable(false);
-		table.setBackground(Color.WHITE);
-		table.setFillsViewportHeight(true);
-		table.setRowSelectionAllowed(true);
-		table.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		scrollPane.setViewportView(table);
-		table.setBorder(new LineBorder(new Color(0, 0, 0)));
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setShowGrid(true);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        buttonCriar = new JButton("Criar");
+        buttonCriar.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+        buttonCriar.setBounds(281, 310, 95, 23);
+        frame.getContentPane().add(buttonCriar);
+        buttonCriar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (textFieldNome.getText().isEmpty() || textFieldCpf.getText().isEmpty() || textFieldSenha.getText().isEmpty()) {
+                        labelMensagem.setText("Campo vazio");
+                        return;
+                    }
 
+                    String cpf = textFieldCpf.getText();
+                    String nome = textFieldNome.getText();
+                    String senha = textFieldSenha.getText(); // Captura a senha
+                    Fachada.criarCorrentista(cpf, nome, senha); // Passa a senha para criarCorrentista
+                    labelMensagem.setText("Correntista criado: " + nome);
+                    listagem();
+                } catch (Exception ex) {
+                    labelMensagem.setText(ex.getMessage());
+                }
+            }
+        });
 
-		button = new JButton("Criar");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if(formattedTextField.getText().isEmpty() || 
-							textField_1.getText().isEmpty() ||
-							textField_2.getText().isEmpty()) 
-					{
-						label.setText("campo vazio");
-						return;
-					}
+        labelMensagem = new JLabel("");
+        labelMensagem.setForeground(Color.BLUE);
+        labelMensagem.setBounds(26, 347, 830, 14);
+        frame.getContentPane().add(labelMensagem);
 
-					String data = formattedTextField.getText();
-					String descricao = textField_1.getText();
-					String preco = textField_2.getText();
-					Fachada.criarCorrentista(data, descricao, Double.parseDouble(preco));
-					label.setText("evento criado: ");
-					listagem();
-				}
-				catch(Exception ex) {
-					label.setText(ex.getMessage());
-				}
-			}
-		});
-		button.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		button.setBounds(281, 238, 95, 23);
-		frame.getContentPane().add(button);
+        JLabel labelNome = new JLabel("Nome:");
+        labelNome.setHorizontalAlignment(SwingConstants.LEFT);
+        labelNome.setFont(new Font("Dialog", Font.PLAIN, 12));
+        labelNome.setBounds(26, 214, 71, 14);
+        frame.getContentPane().add(labelNome);
 
-		button_1 = new JButton("Apagar");
-		button_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (table.getSelectedRow() >= 0){
-						String data = (String) table.getValueAt( table.getSelectedRow(), 1);
+        JLabel labelCpf = new JLabel("CPF:");
+        labelCpf.setHorizontalAlignment(SwingConstants.LEFT);
+        labelCpf.setFont(new Font("Dialog", Font.PLAIN, 12));
+        labelCpf.setBounds(26, 242, 71, 14);
+        frame.getContentPane().add(labelCpf);
+        
+        JLabel labelSenha = new JLabel("Senha:");
+        labelSenha.setHorizontalAlignment(SwingConstants.LEFT);
+        labelSenha.setFont(new Font("Dialog", Font.PLAIN, 12));
+        labelSenha.setBounds(26, 268, 71, 14);
+        frame.getContentPane().add(labelSenha);
 
-						Object[] options = { "Confirmar", "Cancelar" };
-						int escolha = JOptionPane.showOptionDialog(null, "Confirma exclusão da conta? "+data, "Alerta",
-								JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
-						if(escolha == 0) {
-							Fachada.apagarConta(Integer.parseInt(data));
-							label.setText("Conta apagada e correntistas associados removidos: "+ data);
-							listagem();
-						}
-						else
-							label.setText("nao cancelou evento " +data );
-					}
-					else
-						label.setText("selecione uma linha");
-				}
-				catch(Exception erro) {
-					label.setText(erro.getMessage());
-				}
-			}
-		});
-		button_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		button_1.setBounds(670, 180, 95, 23);
-		frame.getContentPane().add(button_1);
+        textFieldNome = new JTextField();
+        textFieldNome.setFont(new Font("Dialog", Font.PLAIN, 12));
+        textFieldNome.setBounds(92, 214, 169, 20); // Ajustado para a linha do nome
+        frame.getContentPane().add(textFieldNome);
+        textFieldNome.setColumns(10);
 
-		label = new JLabel("");
-		label.setForeground(Color.BLUE);
-		label.setBackground(Color.RED);
-		label.setBounds(26, 287, 830, 14);
-		frame.getContentPane().add(label);
+        textFieldCpf = new JTextField();
+        textFieldCpf.setFont(new Font("Dialog", Font.PLAIN, 12));
+        textFieldCpf.setBounds(92, 239, 169, 20); // Ajustado para a linha do CPF
+        frame.getContentPane().add(textFieldCpf);
+        textFieldCpf.setColumns(10);
 
-		label_1 = new JLabel("data");
-		label_1.setHorizontalAlignment(SwingConstants.LEFT);
-		label_1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		label_1.setBounds(26, 214, 71, 14);
-		frame.getContentPane().add(label_1);
+        textFieldSenha = new JTextField();
+        textFieldSenha.setFont(new Font("Dialog", Font.PLAIN, 12));
+        textFieldSenha.setBounds(92, 265, 169, 20); // Ajustado para a linha da senha
+        frame.getContentPane().add(textFieldSenha);
+        textFieldSenha.setColumns(10);
 
-		label_5 = new JLabel("descricao");
-		label_5.setHorizontalAlignment(SwingConstants.LEFT);
-		label_5.setFont(new Font("Dialog", Font.PLAIN, 12));
-		label_5.setBounds(26, 242, 71, 14);
-		frame.getContentPane().add(label_5);
+        buttonVerContas = new JButton("Ver contas");
+        buttonVerContas.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+        buttonVerContas.setBounds(410, 310, 95, 23);
+        frame.getContentPane().add(buttonVerContas);
+        buttonVerContas.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (table.getSelectedRow() >= 0) {
+                        String cpf = table.getValueAt(table.getSelectedRow(), 0).toString();
+                        Correntista correntista = Fachada.localizarCorrentista(cpf);
+                        StringBuilder contas = new StringBuilder("IDs das contas:\n");
+                        for (Conta c : correntista.getContas()) {
+                            contas.append(c.getId()).append("\n");
+                        }
+                        JOptionPane.showMessageDialog(frame, contas.toString());
+                    } else {
+                        labelMensagem.setText("Selecione uma linha");
+                    }
+                } catch (Exception erro) {
+                    labelMensagem.setText(erro.getMessage());
+                }
+            }
+        });
 
-		try {
-			formattedTextField = new JFormattedTextField(new MaskFormatter("##/##/####"));
-		} 
-		catch (ParseException e1) {}
-		formattedTextField.setBounds(67, 212, 80, 20);
-		frame.getContentPane().add(formattedTextField);
+        listagem(); // Chama a listagem inicial ao abrir a tela
+    }
 
-		textField_1 = new JTextField();
-		textField_1.setFont(new Font("Dialog", Font.PLAIN, 12));
-		textField_1.setColumns(10);
-		textField_1.setBounds(92, 239, 169, 20);
-		frame.getContentPane().add(textField_1);
+    private void listagem() {
+        try {
+            List<Correntista> correntistas = Fachada.listarCorrentistas();
+            DefaultTableModel model = new DefaultTableModel(new String[] { "CPF", "Nome" }, 0);
+            for (Correntista c : correntistas) {
+                model.addRow(new Object[] { c.getCpf(), c.getNome() });
+            }
+            table.setModel(model);
+        } catch (Exception e) {
+            labelMensagem.setText(e.getMessage());
+        }
+    }
 
-		label_3 = new JLabel("(dd/mm/aaaa)");
-		label_3.setBounds(158, 215, 88, 14);
-		frame.getContentPane().add(label_3);
-
-		label_8 = new JLabel("selecione");
-		label_8.setBounds(26, 163, 561, 14);
-		frame.getContentPane().add(label_8);
-
-		label_6 = new JLabel("preco");
-		label_6.setHorizontalAlignment(SwingConstants.LEFT);
-		label_6.setFont(new Font("Dialog", Font.PLAIN, 12));
-		label_6.setBounds(26, 266, 43, 14);
-		frame.getContentPane().add(label_6);
-
-		textField_2 = new JTextField();
-		textField_2.setFont(new Font("Dialog", Font.PLAIN, 12));
-		textField_2.setColumns(10);
-		textField_2.setBounds(67, 263, 71, 20);
-		frame.getContentPane().add(textField_2);
-
-		button_4 = new JButton("Listar");
-		button_4.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		button_4.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				listagem();
-			}
-		});
-		button_4.setBounds(410, 8, 95, 23);
-		frame.getContentPane().add(button_4);
-
-		button_2 = new JButton("Adiar");
-		button_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (table.getSelectedRow() >= 0){
-						String data = (String) table.getValueAt( table.getSelectedRow(), 1);
-						String novadata = JOptionPane.showInputDialog(frame,"Digite a nova data (dd/mm/aaaa)");
-						Fachada.adiarCorrentista(data,novadata);
-						label.setText("evento adiado para : "+novadata);
-						listagem();
-					}
-					else
-						label.setText("selecione uma linha");
-				}
-				catch(Exception erro) {
-					label.setText(erro.getMessage());
-				}
-			}
-		});
-		button_2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		button_2.setBounds(775, 180, 95, 23);
-		frame.getContentPane().add(button_2);
-
-		button_3 = new JButton("Ver convidados");
-		button_3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (table.getSelectedRow() >= 0){
-						String id = (String) table.getValueAt( table.getSelectedRow(), 0);
-						Correntista ev = Fachada.localizarCorrentista(Integer.parseInt(id));
-						String nomes= "Nomes dos convidados:";
-						for(ContaEspecial c : ev.getContaEspecial())
-							nomes+="\n"+c.getNome();
-
-						JOptionPane.showMessageDialog(frame, nomes);
-					}
-					else
-						label.setText("selecione uma linha");
-				}
-				catch(Exception erro) {
-					label.setText(erro.getMessage());
-				}
-			}
-		});
-		button_3.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		button_3.setBounds(467, 180, 135, 23);
-		frame.getContentPane().add(button_3);
-
-		button_5 = new JButton("Ver participantes");
-		button_5.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (table.getSelectedRow() >= 0){
-						String id = (String) table.getValueAt( table.getSelectedRow(), 0);
-						Correntista ev = Fachada.localizarCorrentista(Integer.parseInt(id));
-						String nomes= "Nomes dos participantes:";
-						for(Conta p : ev.getContas())
-							nomes+="\n"+p.getNome();
-
-						JOptionPane.showMessageDialog(frame, nomes);
-					}
-					else
-						label.setText("selecione uma linha");
-				}
-				catch(Exception erro) {
-					label.setText(erro.getMessage());
-				}
-			}
-		});
-		button_5.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		button_5.setBounds(322, 180, 135, 23);
-		frame.getContentPane().add(button_5);
-
-	
-
-	}
-
-	//*****************************
-	public void listagem () {
-		try{
-			List<Correntista> lista = Fachada.listarCorrentistas();
-
-			//model contem todas as linhas e colunas da tabela
-			DefaultTableModel model = new DefaultTableModel();
-			//colunas
-			model.addColumn("id");
-			model.addColumn("data");
-			model.addColumn("descricao");
-			model.addColumn("preco");
-			model.addColumn("total pago");
-			model.addColumn("med.idade");
-			model.addColumn("gratuidades");
-			model.addColumn("convidados");
-			//linhas
-			for(Correntista ev : lista) {
-				model.addRow(new Object[]{ev.getId()+"", ev.getData(), ev.getDescricao(), ev.getPreco(),ev.getTotalPago(), ev.getIdadeMedia(), ev.contarGratuidades(), ev.contarContaEspecials()});
-			}
-
-			table.setModel(model);
-			label_8.setText("resultados: "+lista.size()+ " eventos  - selecione uma linha");
-		}
-		catch(Exception erro){
-			label.setText(erro.getMessage());
-		}
-
-	}
+    /*public static void main(String[] args) {
+        // Inicia a tela de correntistas
+        new TelaCorrentista();
+    }*/
 }
