@@ -95,7 +95,7 @@ public class TelaConta {
         label_6.setBounds(21, 190, 431, 14);
         frame.getContentPane().add(label_6);
 
-        label_1 = new JLabel("Digite parte do nome");
+        label_1 = new JLabel("Digite parte do id:");
         label_1.setHorizontalAlignment(SwingConstants.LEFT);
         label_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
         label_1.setBounds(21, 14, 128, 14);
@@ -144,7 +144,7 @@ public class TelaConta {
             }
         });
         button_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        button_1.setBounds(535, 273, 86, 23);
+        button_1.setBounds(443, 215, 86, 23);
         frame.getContentPane().add(button_1);
 
         button = new JButton("Listar");
@@ -188,7 +188,7 @@ public class TelaConta {
             }
         });
         button_2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        button_2.setBounds(309, 213, 86, 23);
+        button_2.setBounds(443, 265, 86, 23);
         frame.getContentPane().add(button_2);
 
         button_3 = new JButton("Adicionar Correntista");
@@ -215,7 +215,7 @@ public class TelaConta {
             }
         });
         button_3.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        button_3.setBounds(411, 213, 137, 23);
+        button_3.setBounds(558, 215, 137, 23);
         frame.getContentPane().add(button_3);
 
         button_4 = new JButton("Remover Correntista");
@@ -242,7 +242,7 @@ public class TelaConta {
             }
         });
         button_4.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        button_4.setBounds(558, 213, 137, 23);
+        button_4.setBounds(558, 265, 137, 23);
         frame.getContentPane().add(button_4);
 
         button_5 = new JButton("Limpar");
@@ -266,8 +266,11 @@ public class TelaConta {
 
     public void listagem() {
         try {
-            //List<Conta> lista = Fachada.listarContas(textField.getText());
-        	List<Conta> lista = Fachada.listarContas();
+            // Obter o texto do campo de pesquisa
+            String idPesquisa = textField.getText().trim();
+            
+            // Listar todas as contas
+            List<Conta> lista = Fachada.listarContas();
 
             DefaultTableModel model = new DefaultTableModel();
             model.addColumn("ID");
@@ -279,28 +282,29 @@ public class TelaConta {
             double saldoTotal = 0.0;  // Para calcular o saldo total
 
             for (Conta conta : lista) {
-                String correntistasTexto = "";
-                if (conta.getCorrentistas().isEmpty()) {
-                    correntistasTexto = "Sem correntistas";
-                } else {
-                    for (Correntista correntista : conta.getCorrentistas()) {
-                        correntistasTexto += correntista.getCpf() + " ";
+                // Verificar se o ID da conta contém o texto pesquisado
+                if (String.valueOf(conta.getId()).contains(idPesquisa)) {
+                    String correntistasTexto = "";
+                    if (conta.getCorrentistas().isEmpty()) {
+                        correntistasTexto = "Sem correntistas";
+                    } else {
+                        for (Correntista correntista : conta.getCorrentistas()) {
+                            correntistasTexto += correntista.getCpf() + " ";
+                        }
+                    }
+                    
+                    saldoTotal += conta.getSaldo();
+
+                    if (conta instanceof ContaEspecial ce) {
+                        model.addRow(new Object[]{conta.getId(), conta.getData(), conta.getSaldo(), correntistasTexto, ce.getLimite()});
+                    } else {
+                        model.addRow(new Object[]{conta.getId(), conta.getData(), conta.getSaldo(), correntistasTexto, "-"});
                     }
                 }
-                
-                saldoTotal += conta.getSaldo();
-
-                if (conta instanceof ContaEspecial ce) {
-                    model.addRow(new Object[]{conta.getId(), conta.getData(), conta.getSaldo(), correntistasTexto, ce.getLimite()});
-                } else {
-                    model.addRow(new Object[]{conta.getId(), conta.getData(), conta.getSaldo(), correntistasTexto, "-"});
-                }
             }
-            
-
 
             table.setModel(model);
-            label_6.setText("Resultados: " + lista.size() + " contas - Selecione uma linha.");
+            label_6.setText("Resultados: " + model.getRowCount() + " contas - Selecione uma linha.");
             labelSaldoTotal.setText("Saldo Total: " + saldoTotal);  // Atualiza o label com o saldo total
         } catch (Exception erro) {
             label.setText("Erro: " + erro.getMessage());
