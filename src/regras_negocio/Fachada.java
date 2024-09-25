@@ -116,6 +116,15 @@ public class Fachada {
 		if (cr==null)
 			throw new Exception("Criar Conta: " + cpf + " -> Nao ha correntista titular com esse cpf!");
 		
+		// Verificar se o CPF já é titular de outra conta no repositorio
+	    for (Conta contaExistente : repositorio.getContas()) {
+	        // Verifica se o primeiro correntista é o titular com o mesmo CPF
+	        if (contaExistente.getCorrentistas().size() > 0 && 
+	            contaExistente.getCorrentistas().get(0).getCpf().equals(cpf)) {
+	            throw new Exception("Criar Conta: " + cpf + " -> Esse CPF já é titular de outra conta");
+	        }
+	    }
+		
 		//o limite minimo é de 50 reais
 		if (limite < 50)
 			throw new Exception("O limite minimo é de 50 reais!");

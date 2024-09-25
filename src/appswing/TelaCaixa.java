@@ -58,6 +58,11 @@ public class TelaCaixa {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
+                	if (textField_1.getText().isEmpty() || textField.getText().isEmpty() || textField_2.getText().isEmpty()) {
+                		JOptionPane.showMessageDialog(frame, "Há campos vazios", "\nErro", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                	
                     int idConta = Integer.parseInt(textField_1.getText().trim());
                     String cpf = textField.getText().trim();
                     double valor = Double.parseDouble(textField_2.getText().trim());
@@ -79,6 +84,11 @@ public class TelaCaixa {
         button_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
+                	if (textField_1.getText().isEmpty() || textField.getText().isEmpty() || textField_2.getText().isEmpty()) {
+                		JOptionPane.showMessageDialog(frame, "Há campos vazios", "\nErro", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                	
                     int idConta = Integer.parseInt(textField_1.getText().trim());
                     String cpf = textField.getText().trim();
                     double valor = Double.parseDouble(textField_2.getText().trim());
@@ -100,6 +110,11 @@ public class TelaCaixa {
         button_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
+                	if (textField_1.getText().isEmpty() || textField.getText().isEmpty() || textField_2.getText().isEmpty()) {
+                		JOptionPane.showMessageDialog(frame, "Há campos vazios", "\nErro", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                	
                     int idContaOrigem = Integer.parseInt(textField_1.getText().trim());
                     String cpf = textField.getText().trim();
                     double valor = Double.parseDouble(textField_2.getText().trim());
