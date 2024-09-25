@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -18,6 +19,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import modelo.Conta;
+import modelo.ContaEspecial;
 import modelo.Correntista;
 import regras_negocio.Fachada;
 
@@ -39,30 +41,31 @@ public class TelaCorrentista {
 
     private void initialize() {
         frame = new JDialog();
+        frame.getContentPane().setFont(new Font("Times New Roman", Font.PLAIN, 12));
         frame.setModal(true);
         frame.setTitle("Correntistas");
-        frame.setBounds(100, 100, 912, 400);
+        frame.setBounds(100, 100, 385, 400);
         frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
         scrollPane = new JScrollPane();
-        scrollPane.setBounds(26, 42, 844, 120);
+        scrollPane.setBounds(57, 35, 240, 168);
         frame.getContentPane().add(scrollPane);
 
         table = new JTable();
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table.setGridColor(Color.BLACK);
         table.setBackground(Color.WHITE);
         table.setFillsViewportHeight(true);
         table.setRowSelectionAllowed(true);
         table.setFont(new Font("Times New Roman", Font.PLAIN, 12));
         scrollPane.setViewportView(table);
-        table.setBorder(new LineBorder(new Color(0, 0, 0)));
+        table.setBorder(new LineBorder(Color.LIGHT_GRAY));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         buttonCriar = new JButton("Criar");
+        buttonCriar.setBounds(76, 310, 95, 23);
         buttonCriar.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        buttonCriar.setBounds(281, 310, 95, 23);
         frame.getContentPane().add(buttonCriar);
         buttonCriar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -85,49 +88,49 @@ public class TelaCorrentista {
         });
 
         labelMensagem = new JLabel("");
+        labelMensagem.setBounds(10, 347, 349, 14);
         labelMensagem.setForeground(Color.BLUE);
-        labelMensagem.setBounds(26, 347, 830, 14);
         frame.getContentPane().add(labelMensagem);
 
         JLabel labelNome = new JLabel("Nome:");
+        labelNome.setBounds(76, 214, 71, 14);
         labelNome.setHorizontalAlignment(SwingConstants.LEFT);
-        labelNome.setFont(new Font("Dialog", Font.PLAIN, 12));
-        labelNome.setBounds(26, 214, 71, 14);
+        labelNome.setFont(new Font("Times New Roman", Font.PLAIN, 12));
         frame.getContentPane().add(labelNome);
 
         JLabel labelCpf = new JLabel("CPF:");
+        labelCpf.setBounds(76, 242, 71, 14);
         labelCpf.setHorizontalAlignment(SwingConstants.LEFT);
-        labelCpf.setFont(new Font("Dialog", Font.PLAIN, 12));
-        labelCpf.setBounds(26, 242, 71, 14);
+        labelCpf.setFont(new Font("Times New Roman", Font.PLAIN, 12));
         frame.getContentPane().add(labelCpf);
         
         JLabel labelSenha = new JLabel("Senha:");
+        labelSenha.setBounds(76, 268, 71, 14);
         labelSenha.setHorizontalAlignment(SwingConstants.LEFT);
-        labelSenha.setFont(new Font("Dialog", Font.PLAIN, 12));
-        labelSenha.setBounds(26, 268, 71, 14);
+        labelSenha.setFont(new Font("Times New Roman", Font.PLAIN, 12));
         frame.getContentPane().add(labelSenha);
 
         textFieldNome = new JTextField();
+        textFieldNome.setBounds(142, 214, 169, 20);
         textFieldNome.setFont(new Font("Dialog", Font.PLAIN, 12));
-        textFieldNome.setBounds(92, 214, 169, 20); // Ajustado para a linha do nome
         frame.getContentPane().add(textFieldNome);
         textFieldNome.setColumns(10);
 
         textFieldCpf = new JTextField();
+        textFieldCpf.setBounds(142, 239, 169, 20);
         textFieldCpf.setFont(new Font("Dialog", Font.PLAIN, 12));
-        textFieldCpf.setBounds(92, 239, 169, 20); // Ajustado para a linha do CPF
         frame.getContentPane().add(textFieldCpf);
         textFieldCpf.setColumns(10);
 
         textFieldSenha = new JTextField();
+        textFieldSenha.setBounds(142, 265, 169, 20);
         textFieldSenha.setFont(new Font("Dialog", Font.PLAIN, 12));
-        textFieldSenha.setBounds(92, 265, 169, 20); // Ajustado para a linha da senha
         frame.getContentPane().add(textFieldSenha);
         textFieldSenha.setColumns(10);
 
         buttonVerContas = new JButton("Ver contas");
+        buttonVerContas.setBounds(216, 310, 95, 23);
         buttonVerContas.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        buttonVerContas.setBounds(410, 310, 95, 23);
         frame.getContentPane().add(buttonVerContas);
         buttonVerContas.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -152,6 +155,7 @@ public class TelaCorrentista {
         listagem(); // Chama a listagem inicial ao abrir a tela
     }
 
+
     private void listagem() {
         try {
             List<Correntista> correntistas = Fachada.listarCorrentistas();
@@ -159,14 +163,26 @@ public class TelaCorrentista {
             for (Correntista c : correntistas) {
                 model.addRow(new Object[] { c.getCpf(), c.getNome() });
             }
-            table.setModel(model);
+            
+            // Atualize o modelo da tabela com os dados
+            table.setModel(model); // Define o modelo preenchido com os correntistas
+            table.getColumnModel().getColumn(0).setPreferredWidth(54);
+            table.getColumnModel().getColumn(1).setPreferredWidth(164);
         } catch (Exception e) {
             labelMensagem.setText(e.getMessage());
         }
     }
 
-    /*public static void main(String[] args) {
-        // Inicia a tela de correntistas
-        new TelaCorrentista();
-    }*/
+
+
+    
+    public JDialog getFrame() {
+        return frame;
+    }
+    
+    public static void main(String[] args) {
+        TelaCorrentista telaCorrentista = new TelaCorrentista();
+        telaCorrentista.getFrame().setVisible(true);
+    }
+
 }

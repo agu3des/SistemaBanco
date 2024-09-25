@@ -76,6 +76,9 @@ public class Fachada {
 		//Associar a conta ao correntista
 		co.adicionarCorrentista(cr);
 		
+		//Associar a conta ao correntista
+		cr.adicionarConta(co);
+		
 	    // Gravar repositório
 	    repositorio.salvarObjetos();
 	}
@@ -131,6 +134,9 @@ public class Fachada {
 		//associar a conta ao correntista
 		ce.adicionarCorrentista(cr);
 		
+		//associar correntista a conta especial
+		cr.adicionarConta(ce);
+		
 		//gravar repositorio
 		repositorio.salvarObjetos();
 		
@@ -152,45 +158,58 @@ public class Fachada {
 		if(caux != null) 
 			throw new Exception("Nao inseriu correntista: " + cpf + " ja participa da conta " + id);
 
+
 		//adicionar a conta ao correntista
 		cr.adicionarConta(co);
 		
 		//adicionar o correntista à conta
 		co.adicionarCorrentista(cr);
 		
+		
 		//gravar repositorio
 		repositorio.salvarObjetos();
 
 	}
 
+	
+	
+	
+	
 	public static void removerCorrentistaConta(int id, String cpf) throws Exception {
-		cpf = cpf.trim();
-		
-		//localizar conta no repositorio usando id
-		Conta co = repositorio.localizarConta(id);
-		if(co == null) 
-			throw new Exception("Remover CorrentistaConta: conta " + id + " inexistente");
-		
-		//localizar correntista no repositorio, usando cpf
-		Correntista cr = repositorio.localizarCorrentista(cpf);
-		if (cr == null)
-			throw new Exception("Remover CorrentistaConta: correntista" + cpf + " inexistente");
-		
-		//localizar correntista na conta, usando o id
-		Conta caux = cr.localizarConta(id);
-		if(caux == null) 
-			throw new Exception("Não removeu correntista" + cpf + " nao participa da conta " + id);
+	    cpf = cpf.trim();
+	    
+	    // localizar conta no repositorio usando id
+	    Conta co = repositorio.localizarConta(id);
+	    if(co == null) 
+	        throw new Exception("Remover CorrentistaConta: conta " + id + " inexistente");
+	    
+	    // localizar correntista no repositorio, usando cpf
+	    Correntista cr = repositorio.localizarCorrentista(cpf);
+	    if (cr == null)
+	        throw new Exception("Remover CorrentistaConta: correntista " + cpf + " inexistente");
 
-		//remover a conta do correntista
-		cr.remover(co);
-		
-		//remover o correntista da conta
-		co.removerCorrentista(cr);
-		
-		//gravar repositorio
-		repositorio.salvarObjetos();
+	    // Localizar correntista dentro da conta usando o cpf 
+	    //(para garantir que estamos lidando com a mesma instância)
+	    Correntista crAux = null;
+	    for (Correntista c : co.getCorrentistas()) {
+	        if (c.getCpf().equals(cpf)) { //se o cpf do momento do for é igual ao que eu passei
+	            crAux = c; // encontramos a instância exata do correntista na conta
+	            break;
+	        }
+	    }
 
+	    if (crAux == null) {
+	        throw new Exception("Não removeu correntista: " + cpf + " não participa da conta " + id);
+	    }
+
+	    // Remover o correntista da conta e a conta do correntista
+	    co.removerCorrentista(crAux);  // Remover a instância exata do correntista na conta
+	    cr.remover(co);  // Remover a conta do correntista no repositório
+
+	    // Salvar alterações no repositório
+	    repositorio.salvarObjetos();
 	}
+
 
 	public static void apagarConta(int id) throws Exception	{
 		//localizar conta no repositorio, usando id 

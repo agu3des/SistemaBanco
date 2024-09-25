@@ -6,9 +6,9 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import modelo.Conta;
 import modelo.ContaEspecial;
 import modelo.Correntista;
-import modelo.Conta;
 
 public class Repositorio {
 	private ArrayList<Conta> contas = new ArrayList<>();
@@ -90,7 +90,7 @@ public class Repositorio {
 		}
 	}
 	
-	
+
 	public void carregarObjetos()  	{
 		// carregar para o repositorio os objetos dos arquivos csv
 		try {
