@@ -6,6 +6,7 @@ public class Alterar {
 
 	public Alterar() {
 		try {
+
 			Fachada.inserirCorrentistaConta(1, "0001");
 			Fachada.inserirCorrentistaConta(3, "1111");
 			Fachada.inserirCorrentistaConta(4, "2222");
@@ -29,6 +30,7 @@ public class Alterar {
 			Fachada.inserirCorrentistaConta(5, "2222");
 			Fachada.inserirCorrentistaConta(5, "3333");
 			Fachada.inserirCorrentistaConta(5, "4444");
+
 
 			System.out.println("Ação realizada com sucesso!");
 		} catch (Exception e) {

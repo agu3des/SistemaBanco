@@ -1,12 +1,13 @@
 package appswing;
 
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class TelaPrincipal {
     private JFrame frame;
@@ -33,6 +34,7 @@ public class TelaPrincipal {
         frame.setBounds(100, 100, 450, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
+        frame.setTitle("Principal");
         
         JLabel label = new JLabel("Bem Vindo ao Banco!!");
         label.setFont(new Font("Times New Roman", Font.PLAIN, 25));
@@ -52,7 +54,7 @@ public class TelaPrincipal {
                 new TelaConta(); // Abre a tela de contas
             }
         });
-        buttonConta.setBounds(139, 123, 137, 23);
+        buttonConta.setBounds(139, 160, 137, 23);
         frame.getContentPane().add(buttonConta);
         
         JButton buttonCorrentista = new JButton("Correntista");
@@ -81,7 +83,8 @@ public class TelaPrincipal {
                 telaCaixa.getFrame().setVisible(true); // Torna a tela Caixa visível
             }
         });
-        buttonCaixa.setBounds(139, 159, 137, 23);
+        buttonCaixa.setBounds(139, 126, 137, 23);
         frame.getContentPane().add(buttonCaixa);
     }
+    
 }

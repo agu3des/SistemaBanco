@@ -1,5 +1,6 @@
 package appswing;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -12,6 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 //import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -120,7 +123,7 @@ public class TelaConta {
         textField_1.setBounds(68, 264, 195, 20);
         frame.getContentPane().add(textField_1);
 
-        button_1 = new JButton("Criar");
+        button_1 = new JButton("Criar Conta");
         button_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -144,7 +147,7 @@ public class TelaConta {
             }
         });
         button_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        button_1.setBounds(443, 215, 86, 23);
+        button_1.setBounds(285, 227, 110, 23);
         frame.getContentPane().add(button_1);
 
         button = new JButton("Listar");
@@ -169,7 +172,7 @@ public class TelaConta {
         textField_2.setBounds(68, 238, 195, 20);
         frame.getContentPane().add(textField_2);
 
-        button_2 = new JButton("Apagar");
+        button_2 = new JButton("Apagar Conta");
         button_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -188,61 +191,57 @@ public class TelaConta {
             }
         });
         button_2.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        button_2.setBounds(443, 265, 86, 23);
+        button_2.setBounds(285, 265, 110, 23);
         frame.getContentPane().add(button_2);
 
         button_3 = new JButton("Adicionar Correntista");
-        button_3.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (table.getSelectedRow() >= 0) {
-                    	String id = table.getValueAt(table.getSelectedRow(), 0).toString();
-                        //String id = (String) table.getValueAt(table.getSelectedRow(), 0);
-                        String cpf = textField_2.getText();
-                        if (cpf.isEmpty()) {
-                            label.setText("CPF não pode ser vazio.");
-                            return;
-                        }
-                        Fachada.inserirCorrentistaConta(Integer.parseInt(id), cpf);
-                        label.setText("Correntista adicionado à conta!");
-                        listagem();
-                    } else {
-                        label.setText("Selecione uma conta para adicionar o correntista.");
-                    }
-                } catch (Exception ex) {
-                    label.setText(ex.getMessage());
-                }
-            }
+	    button_3.addActionListener(e -> {
+    	    if (table.getSelectedRow() >= 0) {
+    	        String id = table.getValueAt(table.getSelectedRow(), 0).toString();
+    	        String cpf = abrirPopupSelecaoCorrentista();
+    	        if (cpf != null) {
+    	            try {
+    	                Fachada.inserirCorrentistaConta(Integer.parseInt(id), cpf);
+    	                label.setText("Correntista adicionado à conta!");
+    	                listagem();
+    	            } catch (Exception ex) {
+    	                label.setText(ex.getMessage());
+    	            }
+    	        } else {
+    	            label.setText("Nenhum correntista selecionado.");
+    	        }
+    	    } else {
+    	        label.setText("Selecione uma conta para adicionar o correntista.");
+    	    }
         });
         button_3.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        button_3.setBounds(558, 215, 137, 23);
+        button_3.setBounds(539, 227, 156, 23);
         frame.getContentPane().add(button_3);
 
         button_4 = new JButton("Remover Correntista");
         button_4.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-                try {
-                    if (table.getSelectedRow() >= 0) {
-                        String cpf = textField_2.getText();  // Usar o campo da tela para o CPF
-                        if (cpf.isEmpty()) {
-                            label.setText("CPF não pode ser vazio.");
-                            return;
+            public void actionPerformed(ActionEvent e) {
+                if (table.getSelectedRow() >= 0) {
+                    String id = table.getValueAt(table.getSelectedRow(), 0).toString();
+                    String cpf = abrirPopupSelecaoCorrentista();
+                    if (cpf != null) {
+                        try {
+                            Fachada.removerCorrentistaConta(Integer.parseInt(id), cpf.trim());
+                            label.setText("Correntista removido com sucesso!");
+                            listagem();
+                        } catch (Exception ex) {
+                            label.setText(ex.getMessage());
                         }
-
-                        String id = table.getValueAt(table.getSelectedRow(), 0).toString();
-                        Fachada.removerCorrentistaConta(Integer.parseInt(id), cpf.trim());
-                        label.setText("Correntista removido com sucesso!");
-                        listagem();
                     } else {
-                        label.setText("Selecione uma conta para remover o correntista.");
+                        label.setText("Nenhum correntista selecionado.");
                     }
-                } catch (Exception ex) {
-                    label.setText(ex.getMessage());
+                } else {
+                    label.setText("Selecione uma conta para remover o correntista.");
                 }
             }
         });
         button_4.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-        button_4.setBounds(558, 265, 137, 23);
+        button_4.setBounds(539, 264, 156, 23);
         frame.getContentPane().add(button_4);
 
         button_5 = new JButton("Limpar");
@@ -309,5 +308,61 @@ public class TelaConta {
         } catch (Exception erro) {
             label.setText("Erro: " + erro.getMessage());
         }
+    }
+    
+    private void carregarCorrentistas(JTable tableCorrentistas) {
+        try {
+            List<Correntista> correntistas = Fachada.listarCorrentistas();
+            DefaultTableModel model = new DefaultTableModel(new String[]{"CPF", "Nome"}, 0);
+
+            correntistas.forEach(c -> model.addRow(new Object[]{c.getCpf(), c.getNome()}));
+            tableCorrentistas.setModel(model);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, "Erro ao carregar correntistas: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
+    private String abrirPopupSelecaoCorrentista() {
+        JDialog dialog = new JDialog(frame, "Selecione o Correntista", true);
+        dialog.setSize(400, 300);
+        dialog.getContentPane().setLayout(new BorderLayout());
+        dialog.setLocationRelativeTo(frame);
+
+        JTable tableCorrentistas = new JTable();
+        JScrollPane scrollPane = new JScrollPane(tableCorrentistas);
+        dialog.getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        JButton btnSelect = new JButton("Selecionar");
+        JButton btnCancel = new JButton("Cancelar");
+        buttonPanel.add(btnSelect);
+        buttonPanel.add(btnCancel);
+        dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+        carregarCorrentistas(tableCorrentistas);
+
+        final String[] cpfSelecionado = {null};
+        btnSelect.addActionListener(e -> {
+            if (tableCorrentistas.getSelectedRow() >= 0) {
+                cpfSelecionado[0] = tableCorrentistas.getValueAt(tableCorrentistas.getSelectedRow(), 0).toString();
+                dialog.dispose();
+            }
+        });
+
+        btnCancel.addActionListener(e -> dialog.dispose());
+
+        dialog.setVisible(true);
+        return cpfSelecionado[0];
+    }
+
+    
+    public JDialog getFrame() {
+        return frame;
+    }
+    
+    public static void main(String[]args) {
+        TelaConta telaConta = new TelaConta(); 
+        telaConta.getFrame().setVisible(true); 
     }
 }
